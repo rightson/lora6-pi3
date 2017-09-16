@@ -64,3 +64,15 @@ prepare_lora6_module:
 	cd $(LORA6) && \
 	cp -f $(LORA6).ko $(ROOTFS)
 
+copy_kernel_and_device_tree_blobs:
+	@echo $(BOOT_ROOT)/$(KERNEL).img
+	if [ ! -f $(BOOT_ROOT)/$(KERNEL).img ]; then \
+		echo "Boot kernel image \"$(BOOT_ROOT)\" doesn't exist"; \
+		exit -1;\
+	fi;
+	sudo cp $(BOOT_ROOT)/$(KERNEL).img $(BOOT_ROOT)/$(KERNEL)-backup.img
+	sudo cp linux/arch/arm/boot/zImage $(BOOT_ROOT)/$(KERNEL).img
+	sudo cp linux/arch/arm/boot/dts/*.dtb $(BOOT_ROOT)/
+	sudo cp linux/arch/arm/boot/dts/overlays/*.dtb* $(BOOT_ROOT)/overlays/
+	sudo cp linux/arch/arm/boot/dts/overlays/README $(BOOT_ROOT)/overlays/
+
